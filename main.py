@@ -1,9 +1,30 @@
+import random
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 
 FONT_NAME = "Courier"
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+
+def generate_password():
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    nr_letters = random.randint(8, 10)
+    nr_symbols = random.randint(2, 4)
+    nr_numbers = random.randint(2, 4)
+
+    password_list = []
+    password_list += [random.choice(letters)]
+    password_list += [random.choice(numbers)]
+    password_list += [random.choice(symbols)]
+
+    random.shuffle(password_list)
+
+    password = "".join(password_list)
+    return password
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -12,13 +33,18 @@ def save_password():
     email_data = input_email.get()
     password_data = input_password.get()
     if website_data != '' and password_data != '':
-        str = f"{website_data} | {email_data} | {password_data}\n"
-        with open('data.txt', 'a') as file:
-            file.write(str)
-        input_website.delete(0, END)
-        input_password.delete(0, END)
+        question = f"Entered values:\nSite: {website_data}\nEmail: {email_data}\nPassword: {password_data}\nIt's ok to save?";
+        is_ok = messagebox.askyesno(website_data, question)
+        if is_ok:
+            str = f"{website_data} | {email_data} | {password_data}\n"
+            with open('data.txt', 'a') as file:
+                file.write(str)
+            input_website.delete(0, END)
+            input_password.delete(0, END)
+            #close window
+            window.destroy()
     else:
-        print('fill inputs')
+        messagebox.showerror('Error message', 'All fields are requried')
 
 # ---------------------------- UI SETUP ------------------------------- #
 
