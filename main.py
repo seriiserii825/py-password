@@ -1,4 +1,7 @@
+import os
+import subprocess
 import random
+import pyperclip
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -16,15 +19,16 @@ def generate_password():
     nr_symbols = random.randint(2, 4)
     nr_numbers = random.randint(2, 4)
 
-    password_list = []
-    password_list += [random.choice(letters)]
-    password_list += [random.choice(numbers)]
-    password_list += [random.choice(symbols)]
+    password_list = [random.choice(letters) for _ in range(nr_letters)]
+    password_list += [random.choice(symbols) for _ in range(nr_symbols)]
+    password_list += [random.choice(numbers) for _ in range(nr_numbers)]
 
     random.shuffle(password_list)
-
     password = "".join(password_list)
-    return password
+    input_password.delete(0, END)
+    input_password.insert(0, password)
+    pyperclip.copy(password)
+    subprocess.Popen(['notify-send', password])
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -40,6 +44,7 @@ def save_password():
             with open('data.txt', 'a') as file:
                 file.write(str)
             input_website.delete(0, END)
+            input_email.delete(0, END)
             input_password.delete(0, END)
             #close window
             window.destroy()
@@ -75,7 +80,6 @@ label_email.grid(row=2, column=0)
 
 input_email = Entry(window, width=35)
 input_email.grid(row=2, column=1, columnspan=2)
-input_email.insert(0, "seriiburduja@gmail.com")
 
 label_password = Label(text="Password", bg="white", font=(FONT_NAME, 12, "bold"))
 label_password.grid(row=3, column=0)
@@ -83,7 +87,7 @@ label_password.grid(row=3, column=0)
 input_password = Entry(window, width=27)
 input_password.grid(row=3, column=1)
 
-button_generate_password = Button(text="Gen", highlightthickness=0)
+button_generate_password = Button(text="Gen", highlightthickness=0, command=generate_password)
 button_generate_password.grid(row=3, column=2)
 
 button_add = Button(text="Add", width=33, highlightthickness=0, command=save_password)
