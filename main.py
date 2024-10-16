@@ -7,6 +7,19 @@ FONT_NAME = "Courier"
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
+def save_password():
+    website_data = input_website.get()
+    email_data = input_email.get()
+    password_data = input_password.get()
+    if website_data != '' and password_data != '':
+        str = f"{website_data} | {email_data} | {password_data}\n"
+        with open('data.txt', 'a') as file:
+            file.write(str)
+        input_website.delete(0, END)
+        input_password.delete(0, END)
+    else:
+        print('fill inputs')
+
 # ---------------------------- UI SETUP ------------------------------- #
 
 window = Tk()
@@ -29,12 +42,14 @@ label_website.grid(row=1, column=0)
 
 input_website = Entry(window, width=35)
 input_website.grid(row=1, column=1, columnspan=2)
+input_website.focus()
 
 label_email = Label(text="Email/Username", bg="white", font=(FONT_NAME, 12, "bold"))
 label_email.grid(row=2, column=0)
 
 input_email = Entry(window, width=35)
 input_email.grid(row=2, column=1, columnspan=2)
+input_email.insert(0, "seriiburduja@gmail.com")
 
 label_password = Label(text="Password", bg="white", font=(FONT_NAME, 12, "bold"))
 label_password.grid(row=3, column=0)
@@ -45,7 +60,7 @@ input_password.grid(row=3, column=1)
 button_generate_password = Button(text="Gen", highlightthickness=0)
 button_generate_password.grid(row=3, column=2)
 
-button_add = Button(text="Add", width=33, highlightthickness=0)
+button_add = Button(text="Add", width=33, highlightthickness=0, command=save_password)
 button_add.grid(row=4, column=1, columnspan=2)
 
 window.mainloop()
