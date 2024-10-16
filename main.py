@@ -26,7 +26,7 @@ canvas.grid(row=0, column=1)
 label_website = Label(text="Timer", bg="white", font=(FONT_NAME, 12, "bold"))
 label_website.grid(row=1, column=0)
 
-input_website = Entry(window)
+input_website = Entry(window, width=35)
 input_website.grid(row=1, column=1, columnspan=2)
 
 label_email = Label(text="Email/Username", bg="white", font=(FONT_NAME, 12, "bold"))
