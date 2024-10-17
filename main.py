@@ -47,14 +47,20 @@ def save_password():
         question = f"Entered values:\nSite: {website_data}\nEmail: {email_data}\nPassword: {password_data}\nIt's ok to save?";
         is_ok = messagebox.askyesno(website_data, question)
         if is_ok:
-            with open('data.json', 'r') as file:
-                #reading old data
-                data = json.load(file)
-                #updating old data with new data
-                data.update(new_data)
-            with open('data.json', 'w') as file:
-                #saving updated data
-                json.dump(data, file, indent=4)
+            try:
+                with open('data.json', 'r') as file:
+                    #reading old data
+                    data = json.load(file)
+                    #updating old data with new data
+                    data.update(new_data)
+            except FileNotFoundError:
+                with open('data.json', 'w') as file:
+                    #saving updated data
+                    json.dump(new_data, file, indent=4)
+            else:
+                with open('data.json', 'w') as file:
+                    #saving updated data
+                    json.dump(data, file, indent=4)
             input_website.delete(0, END)
             input_email.delete(0, END)
             input_password.delete(0, END)
@@ -62,6 +68,26 @@ def save_password():
             window.destroy()
     else:
         messagebox.showerror('Error message', 'All fields are requried')
+
+# ---------------------------- SEARCH DATA ------------------------------- #
+def search_data():
+    try:
+        with open('data.json', 'r') as file:
+            data = json.load(file)
+            print(f"data: {data}")
+            website = input_website.get()
+            if website != '':
+                if website in data:
+                    email = data[website]['email']
+                    password = data[website]['password']
+                    #copy data to clipboard
+                    data = f"Email: {email}\nPassword: {password}"
+                    pyperclip.copy(data)
+                    messagebox.showinfo('Info message', f"Email: {email}\nPassword: {password}")
+                else:
+                    messagebox.showinfo('Info message', f"No details for {website} exists")
+    except FileNotFoundError:
+        messagebox.showerror('Error message', 'No Data File Found')
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -86,6 +112,9 @@ label_website.grid(row=1, column=0)
 input_website = Entry(window, width=35)
 input_website.grid(row=1, column=1, columnspan=2)
 input_website.focus()
+
+button_search = Button(text="Search", highlightthickness=0, command=search_data)
+button_search.grid(row=1, column=2)
 
 label_email = Label(text="Email/Username", bg="white", font=(FONT_NAME, 12, "bold"))
 label_email.grid(row=2, column=0)
