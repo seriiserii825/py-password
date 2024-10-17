@@ -1,6 +1,7 @@
 import subprocess
 import random
 import pyperclip
+import json
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -8,9 +9,6 @@ from PIL import Image, ImageTk
 FONT_NAME = "Courier"
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
-
-with open('test.txt', 'r') as file:
-    data = file.readlines()
 
 def generate_password():
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -38,13 +36,25 @@ def save_password():
     website_data = input_website.get()
     email_data = input_email.get()
     password_data = input_password.get()
+    new_data = {
+            website_data: {
+                "email": email_data,
+                "password": password_data
+                
+            }
+    }
     if website_data != '' and password_data != '':
         question = f"Entered values:\nSite: {website_data}\nEmail: {email_data}\nPassword: {password_data}\nIt's ok to save?";
         is_ok = messagebox.askyesno(website_data, question)
         if is_ok:
-            str = f"{website_data} | {email_data} | {password_data}\n"
-            with open('data.txt', 'a') as file:
-                file.write(str)
+            with open('data.json', 'r') as file:
+                #reading old data
+                data = json.load(file)
+                #updating old data with new data
+                data.update(new_data)
+            with open('data.json', 'w') as file:
+                #saving updated data
+                json.dump(data, file, indent=4)
             input_website.delete(0, END)
             input_email.delete(0, END)
             input_password.delete(0, END)
